@@ -1,0 +1,128 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motion Tracking</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        #character-canvas {
+            border: 1px solid black;
+        }
+        #reminder {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #f1f1f1;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Motion Tracking</h1>
+    <button id="camera-btn">Turn On Camera</button>
+    <button id="tracking-btn">Activate Tracking</button>
+    <button id="paddle-detection-btn">Detect Paddle</button>
+    <canvas id="character-canvas" width="400" height="300"></canvas>
+    <video id="motion-feed" style="display: none;" autoplay></video>
+    <div id="reminder">
+        <h2>Reminder: Don't forget to paddle!</h2>
+    </div>
+    
+    <script>
+        $(document).ready(function() {
+            $('#camera-btn').click(function() {
+                $('#motion-feed').css('display', 'block');
+            });
+
+            $('#tracking-btn').click(function() {
+                // Logic to activate tracking
+                navigator.mediaDevices.getUserMedia({ video: true })
+                    .then(function(stream) {
+                        var video = document.getElementById('motion-feed');
+                        video.srcObject = stream;
+                        video.play();
+                    })
+                    .catch(function(error) {
+                        console.log('Error accessing camera:', error);
+                    });
+
+                // Get the canvas element
+                var canvas = document.getElementById('character-canvas');
+                var ctx = canvas.getContext('2d');
+
+                // Draw the video frames on the canvas
+                function drawVideoFrames() {
+                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    requestAnimationFrame(drawVideoFrames);
+                }
+
+                // Start drawing the video frames
+                var video = document.getElementById('motion-feed');
+                video.addEventListener('play', function() {
+                    drawVideoFrames();
+                });
+            });
+
+            $('#paddle-detection-btn').click(function() {
+                // Logic to detect paddle
+                showReminder();
+            });
+
+            function showReminder() {
+                $('#reminder').fadeIn(500).delay(3000).fadeOut(500);
+            }
+        });
+    </script>
+
+
+
+</body>
+</html> -->
+
+
+{% extends "bootstrap/base.html" %} {% block title %} {{ TITLE }} {% endblock %}
+{% block styles %} {{ super() }}
+
+<!-- Custom styles -->
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+{% endblock %} {% block content %}
+<h1>{{ TITLE }}</h1>
+
+<div id="container">
+  <img id="videoElement" src="{{ url_for('video_feed') }}" />
+  <form id="control">
+    Camera preview:
+    <a id="cam-preview"><button class="btn btn-default">On/Off</button></a>
+    Flip horizontal:
+    <a id="flip-horizontal"><button class="btn btn-default">On/Off</button></a>
+    Run detection model:
+    <a id="use-model"><button class="btn btn-default">On/Off</button></a>
+    <br />
+    <br />
+    Exposure:
+    <a id="exposure-down"><button class="btn btn-default">-1</button></a>
+    <a id="exposure-up"><button class="btn btn-default">+1</button></a>
+    Contrast:
+    <a id="contrast-down"><button class="btn btn-default">-4</button></a>
+    <a id="contrast-up"><button class="btn btn-default">+4</button></a>
+    <br />
+    <br />
+    <a id="reset-cam"><button class="btn btn-default">Reset camera</button></a>
+  </form>
+</div>
+{% endblock %} {% block scripts %}
+<!-- Imports -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+<!-- Scripts -->
+<script
+  type="text/javascript"
+  src="{{ url_for('static', filename='script.js') }}"
+></script>
+
+{{ super() }} {% endblock %}
